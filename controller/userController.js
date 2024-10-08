@@ -33,17 +33,30 @@ const Register = async (req, res) =>{
 
 
         //sign the token
-        const token = jwt.sign({user:savedUser._id, role: savedUser.role,}, process.env.JWT_SECRET_KEY)
+        const token = jwt.sign({user:savedUser._id, role: savedUser.role,}, process.env.JWT_SECRET_KEY, { expiresIn: '7d' })
         
         //send the token in a HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true,
-        }).status(200).json({ Message: "User Created Successfully" })
+        }).status(200).json({
+            message: "User created successfully",
+            user: {
+                _id: savedUser._id,
+                username: savedUser.username,
+                email: savedUser.email,
+                role: savedUser.role,
+            },
+        });
 
 
     } catch (error) {
         console.log(error)
-        res.status(401).json({ Message: "Internal Error"})
+        res.status(401).json({ user: {
+            _id: existingUser._id, // Access user._id here
+            email: existingUser.email,
+            role: existingUser.role,
+        },
+        token, Message: "Internal Error"})
     }
 }
 
@@ -64,11 +77,20 @@ const Login = async (req, res) =>{
             return res.status(401).json({errorMessage: "Wrong Password"})
 
         //sign the token
-        const token = jwt.sign({user:existingUser._id, role: existingUser.role,}, process.env.JWT_SECRET_KEY)
+        const token = jwt.sign({user:existingUser._id, role: existingUser.role,}, process.env.JWT_SECRET_KEY, { expiresIn: '7d' })
         //send the token in a HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true,
-        }).send();
+        })
+        
+        res.status(200).json({
+            user: {
+                _id: existingUser._id, // Access user._id here
+                email: existingUser.email,
+                role: existingUser.role,
+            },
+            token,
+        });
 
     }  catch (error) {
         console.log(error)
@@ -82,7 +104,14 @@ const Logout = (req, res) =>{
     res.cookie("token", "", {
         httpOnly: true,
         expires: new Date(0)
-    }).send()
+    })
+
+     // Clear the userId cookie as well
+     res.cookie("userId", "", {
+        expires: new Date(0) // Set expiration date to the past
+    });
+
+    res.status(200).json({ message: "Logout successful" });
 }
 
 

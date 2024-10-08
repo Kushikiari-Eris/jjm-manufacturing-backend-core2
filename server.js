@@ -17,6 +17,10 @@ app.use(cors({
 dotenv.config()
 dbConnection()
 
+app.get('/', (req, res) =>{
+    res.json({ Hello: "World"})
+})
+
 app.use('/api/auth', userRoutes)
 app.use('/product', productRoutes)
 

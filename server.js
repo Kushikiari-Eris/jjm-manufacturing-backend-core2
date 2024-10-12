@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const productRoutes = require('./routes/productRoutes')
+const ordersRoutes = require('./routes/ordersRoutes')
 
 
 const app = express()
@@ -23,6 +24,7 @@ app.get('/', (req, res) =>{
 
 app.use('/api/auth', userRoutes)
 app.use('/product', productRoutes)
+app.use('/orders', ordersRoutes)
 
 
 app.listen(process.env.PORT)

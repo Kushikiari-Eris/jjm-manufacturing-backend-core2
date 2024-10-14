@@ -27,9 +27,9 @@ app.get('/', (req, res) =>{
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 // Use routes for APIs
-app.use('/api/auth', userRoutes)
-app.use('/product', productRoutes)
-app.use('/orders', ordersRoutes)
+app.use('/api', userRoutes)
+app.use('/api', productRoutes)
+app.use('/api', ordersRoutes)
 
 
 app.listen(process.env.PORT)
